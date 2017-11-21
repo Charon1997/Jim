@@ -1,17 +1,10 @@
 package nexuslink.charon.jim.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v4.view.PagerAdapter;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
-
-import nexuslink.charon.jim.R;
-import nexuslink.charon.jim.contract.RegisterContract;
 
 /**
  * 项目名称：Jim
@@ -23,33 +16,22 @@ import nexuslink.charon.jim.contract.RegisterContract;
  * 修改备注：
  */
 
-public class RegisterPagerAdapter extends PagerAdapter {
-    private ArrayList<View> viewList;
+public class RegisterPagerAdapter extends FragmentPagerAdapter {
+    private ArrayList<Fragment> fragmentList;
 
-
-    public RegisterPagerAdapter(ArrayList<View> viewList) {
-        this.viewList = viewList;
+    public RegisterPagerAdapter(FragmentManager fm,ArrayList<Fragment> fragmentList) {
+        super(fm);
+        this.fragmentList = fragmentList;
     }
 
     @Override
     public int getCount() {
-        return viewList.size();
+        return fragmentList.size();
     }
 
-    @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view == object;
-    }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        container.addView(viewList.get(position));
-        return viewList.get(position);
-    }
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        View view = (View) object;
-        container.removeView(view);
+    public Fragment getItem(int position) {
+        return fragmentList.get(position);
     }
 }

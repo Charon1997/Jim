@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.activity.RegisterActivity">
     <com.tmall.ultraviewpager.UltraViewPager
-        android:id="@+id/viewpager_register"
+        android:id="@+id/viewpager_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </com.tmall.ultraviewpager.UltraViewPager>

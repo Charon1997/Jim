@@ -12,47 +12,78 @@ package nexuslink.charon.jim.contract;
 
 public interface RegisterContract {
     interface Model {
+
     }
 
     interface View {
-        void loading(boolean loading,int position);
+        interface Forget {
+            String getUsername();
 
-        String getLogonUsername();
+            String getCode();
 
-        String getLogonPassword();
+            void setCode(String msg);
 
-        String getLoginUsername();
+            String getPassword();
 
-        String getLoginCode();
+            String getPassword2();
 
-        String getLoginPassword();
+            void codeClickable(boolean clickable);
 
-        String getLoginPassword2();
+            String check();
 
-        String getForgetUsername();
+            void loading(boolean loading);
 
-        String getForgetCode();
+            void showError(String msg);
+        }
 
-        String getForgetPassword();
+        interface Logon {
+            String getLogonUsername();
 
-        String getForgetPassword2();
+            String getLogonPassword();
 
-        String checkLogon();
+            String checkLogon();
 
-        String checkLogin();
+            void loading(boolean loading);
 
-        String checkForget();
+            void showError(String msg);
+        }
+
+        interface Login {
+            String getLoginUsername();
+
+            String getLoginCode();
+
+            void setLoginCode(String msg);
+
+            String getLoginPassword();
+
+            String getLoginPassword2();
+
+            void loginCodeClickable(boolean clickable);
+
+            String checkLogin();
+
+            void loading(boolean loading);
+
+            void showError(String msg);
+        }
+
     }
 
     interface Presenter {
-        void getForgetCode();
+        
+        interface Forget {
+            void getCode();
+            void send();
+        }
 
-        void getLoginCode();
-
-        void login();
-
-        void logon();
-
-        void forget();
+        interface Login {
+            void getCode();
+            void send();
+        }
+        
+        interface Logon{
+            void send();
+        }
     }
 }
