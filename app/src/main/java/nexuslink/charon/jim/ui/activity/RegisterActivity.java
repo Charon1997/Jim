@@ -3,10 +3,12 @@ package nexuslink.charon.jim.ui.activity;
 import android.Manifest;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -17,21 +19,19 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
 import kr.co.namee.permissiongen.PermissionFail;
 import kr.co.namee.permissiongen.PermissionGen;
 import kr.co.namee.permissiongen.PermissionSuccess;
 import nexuslink.charon.jim.R;
 import nexuslink.charon.jim.adapter.RegisterPagerAdapter;
 import nexuslink.charon.jim.contract.RegisterContract;
-import nexuslink.charon.jim.listener.OnViewPagerScroll;
+import nexuslink.charon.jim.listener.register.OnViewPagerScroll;
 import nexuslink.charon.jim.ui.fragment.ForgetFragment;
 import nexuslink.charon.jim.ui.fragment.LoginFragment;
 import nexuslink.charon.jim.ui.fragment.LogonFragment;
 
-import static nexuslink.charon.jim.Constant.CODE_LENGTH;
-import static nexuslink.charon.jim.Constant.PASSWORD_MAX;
-import static nexuslink.charon.jim.Constant.PASSWORD_MIX;
-import static nexuslink.charon.jim.Constant.PHONE_LENGTH;
 
 /**
  * 项目名称：Jim
@@ -44,7 +44,7 @@ import static nexuslink.charon.jim.Constant.PHONE_LENGTH;
  */
 
 public class RegisterActivity extends AppCompatActivity implements RegisterContract.View {
-
+    private EventHandler eventHandler;
 
     @BindView(R.id.viewpager_main)
     UltraViewPager viewpagerMain;
@@ -85,6 +85,68 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
         initView();
 
         sp = getSharedPreferences("register", MODE_PRIVATE);
+
+        initSMS();
+
+
+    }
+
+    private void initSMS() {
+        SMSSDK.setAskPermisionOnReadContact(true);
+        eventHandler = new EventHandler(){
+            @Override
+            public void afterEvent(int i, int i1, Object o) {
+                int current = viewpagerMain.getCurrentItem();
+                if (o instanceof Throwable){
+                    Throwable throwable = (Throwable) o;
+                    String msg = throwable.getMessage();
+                    if (current == 0) {
+                        loginFragment.showError(msg.substring(24,msg.length()-2 ));
+                    } else {
+                        forgetFragment.showError(msg.substring(24,msg.length()-2 ));
+                    }
+                } else {
+                    if (i1 == SMSSDK.RESULT_COMPLETE) {
+                        //回调完成
+                        if (i == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                            //提交验证码成功
+                            Log.d("TAG", "验证成功");
+                            if (current == 0) {
+                                loginFragment.send();
+                            } else {
+                                forgetFragment.send();
+                            }
+                        } else if (i == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
+                            //获取验证码成功
+                            if (current == 0) {
+                                loginFragment.showError("验证码已发送");
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        loginFragment.countDown();
+                                    }
+                                });
+
+                            } else {
+                                forgetFragment.showError("验证码已发送");
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        forgetFragment.countDown();
+                                    }
+                                });
+
+                            }
+                        } else if (i == SMSSDK.EVENT_GET_VOICE_VERIFICATION_CODE) {
+                            //语音
+                        } else if (i == SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES) {
+                            //返回支持发送验证码的国家列表
+                        }
+                    }
+                }
+            }
+        };
+        SMSSDK.registerEventHandler(eventHandler);
     }
 
     private void initView() {
@@ -158,19 +220,9 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
         Toast.makeText(this, "获取权限失败", Toast.LENGTH_SHORT).show();
     }
 
-    private String check(String username, String code, String password, String password2) {
-        if (username == null || "".equals(username) || username.length() != PHONE_LENGTH) {
-            return "请输入正确的手机号";
-        } else if (code == null || "".equals(code) || code.length() != CODE_LENGTH) {
-            return "请输入正确的验证码";
-        } else if (password == null || "".equals(password) || password.length() > PASSWORD_MAX || password.length() < PASSWORD_MIX) {
-            return "密码位数应在" + PASSWORD_MIX + "-" + PASSWORD_MAX + "之间";
-        } else if (password2 == null || "".equals(password2) || password2.length() > PASSWORD_MAX || password2.length() < PASSWORD_MIX) {
-            return "密码位数应在" + PASSWORD_MIX + "-" + PASSWORD_MAX + "之间";
-        } else if (!password.equals(password2)) {
-            return "两个密码不一致";
-        } else {
-            return "正确";
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SMSSDK.unregisterEventHandler(eventHandler);
     }
 }

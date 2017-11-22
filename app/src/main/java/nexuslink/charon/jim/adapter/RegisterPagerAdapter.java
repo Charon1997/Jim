@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class RegisterPagerAdapter extends FragmentPagerAdapter {
     private ArrayList<Fragment> fragmentList;
 
-    public RegisterPagerAdapter(FragmentManager fm,ArrayList<Fragment> fragmentList) {
+    public RegisterPagerAdapter(FragmentManager fm, ArrayList<Fragment> fragmentList) {
         super(fm);
         this.fragmentList = fragmentList;
     }

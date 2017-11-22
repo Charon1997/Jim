@@ -1,5 +1,7 @@
 package nexuslink.charon.jim.contract;
 
+import nexuslink.charon.jim.model.RegisterModel;
+
 /**
  * 项目名称：Jim
  * 类描述：
@@ -34,55 +36,64 @@ public interface RegisterContract {
             void loading(boolean loading);
 
             void showError(String msg);
+
+            void countDown();
+
+            void send();
         }
 
         interface Logon {
-            String getLogonUsername();
+            String getUsername();
 
-            String getLogonPassword();
+            String getPassword();
 
-            String checkLogon();
+            String check();
 
             void loading(boolean loading);
 
             void showError(String msg);
+
+            void success(RegisterModel user);
         }
 
         interface Login {
-            String getLoginUsername();
+            String getUsername();
 
-            String getLoginCode();
+            String getCode();
 
-            void setLoginCode(String msg);
+            void setCode(String msg);
 
-            String getLoginPassword();
+            String getPassword();
 
-            String getLoginPassword2();
+            String getPassword2();
 
-            void loginCodeClickable(boolean clickable);
+            void codeClickable(boolean clickable);
 
-            String checkLogin();
+            String check();
 
             void loading(boolean loading);
 
             void showError(String msg);
+
+            void countDown();
+
+            void send();
+
         }
 
     }
 
     interface Presenter {
-        
+
         interface Forget {
-            void getCode();
             void send();
         }
 
         interface Login {
-            void getCode();
             void send();
         }
-        
-        interface Logon{
+
+        interface Logon {
             void send();
         }
     }

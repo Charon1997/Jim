@@ -1,4 +1,4 @@
-package nexuslink.charon.jim.listener;
+package nexuslink.charon.jim.listener.register;
 
 /**
  * 项目名称：Jim

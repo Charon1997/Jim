@@ -1,24 +1,34 @@
 package nexuslink.charon.jim.ui.fragment;
 
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import nexuslink.charon.jim.MainActivity;
 import nexuslink.charon.jim.R;
 import nexuslink.charon.jim.contract.RegisterContract;
-import nexuslink.charon.jim.listener.OnViewPagerScroll;
+import nexuslink.charon.jim.listener.register.OnViewPagerScroll;
+import nexuslink.charon.jim.model.RegisterModel;
+import nexuslink.charon.jim.presenter.register.LogonPresenter;
+import nexuslink.charon.jim.utils.SystemUtil;
 
 /**
  * 项目名称：Jim
@@ -44,9 +54,12 @@ public class LogonFragment extends Fragment implements RegisterContract.View.Log
     @BindView(R.id.tv_to_forget_logon_register)
     TextView tvToForgetLogonRegister;
     Unbinder unbinder;
+    @BindView(R.id.layout_logon)
+    LinearLayout layoutLogon;
 
     private OnViewPagerScroll scroll;
-
+    private LogonPresenter presenter = new LogonPresenter(this);
+    private ProgressDialog progressDialog;
     public void setOnViewPagerScroll(OnViewPagerScroll scroll) {
         if (this.scroll == null) {
             this.scroll = scroll;
@@ -68,43 +81,67 @@ public class LogonFragment extends Fragment implements RegisterContract.View.Log
     }
 
     @Override
-    public String getLogonUsername() {
-        return null;
+    public String getUsername() {
+        return view2String(etUsernameLogonRegister);
     }
 
     @Override
-    public String getLogonPassword() {
-        return null;
+    public String getPassword() {
+        return view2String(etPasswordLogonRegister);
     }
 
     @Override
-    public String checkLogon() {
-        return null;
+    public String check() {
+        return SystemUtil.check(new RegisterModel(getUsername(), getPassword()));
     }
 
     @Override
     public void loading(boolean loading) {
-
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("正在登录");
+        progressDialog.setTitle("登录");
+        if (loading) {
+            progressDialog.show();
+        } else {
+            progressDialog.cancel();
+        }
     }
 
     @Override
     public void showError(String msg) {
-
+        Snackbar.make(layoutLogon, msg, Snackbar.LENGTH_SHORT).show();
     }
 
-    @OnClick({R.id.tv_to_login_logon_register, R.id.tv_to_forget_logon_register,R.id.btn_send_logon_register})
+    @Override
+    public void success(RegisterModel user) {
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+
+    @OnClick({R.id.tv_to_login_logon_register, R.id.tv_to_forget_logon_register, R.id.btn_send_logon_register})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_to_login_logon_register:
+
                 scroll.leftScroll();
                 break;
             case R.id.tv_to_forget_logon_register:
                 scroll.rightScroll();
                 break;
             case R.id.btn_send_logon_register:
+                SystemUtil.hideSoftKeyboard((InputMethodManager)
+                        getActivity().getSystemService(Context.INPUT_METHOD_SERVICE), getActivity().getWindow());
+
+                presenter.send();
                 break;
             default:
                 break;
         }
+    }
+
+    private String view2String(EditText et) {
+        return et.getText().toString().trim();
     }
 }

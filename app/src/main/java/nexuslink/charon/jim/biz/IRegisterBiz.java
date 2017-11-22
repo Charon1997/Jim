@@ -1,8 +1,9 @@
 package nexuslink.charon.jim.biz;
 
-import android.view.View;
 
-import nexuslink.charon.jim.listener.OnClickableListener;
+import nexuslink.charon.jim.listener.register.OnForgetListener;
+import nexuslink.charon.jim.listener.register.OnLoginListener;
+import nexuslink.charon.jim.listener.register.OnLogonListener;
 
 
 /**
@@ -16,11 +17,9 @@ import nexuslink.charon.jim.listener.OnClickableListener;
  */
 
 public interface IRegisterBiz {
-    void login(String username, String code, String password, String password2);
+    void login(String username, String password, OnLoginListener listener);
 
-    void logon(String username, String password);
+    void logon(String username, String password, OnLogonListener listener);
 
-    void forget(String username, String code, String password, String password2);
-
-    void getCode(String username, OnClickableListener listener);
+    void forget(String username, String password, OnForgetListener listener);
 }

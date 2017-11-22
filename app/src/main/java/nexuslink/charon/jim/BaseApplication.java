@@ -2,6 +2,8 @@ package nexuslink.charon.jim;
 
 import android.app.Application;
 
+import com.mob.MobApplication;
+
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
 
@@ -15,7 +17,7 @@ import cn.jpush.im.android.api.JMessageClient;
  * 修改备注：
  */
 
-public class BaseApplication extends Application {
+public class BaseApplication extends MobApplication {
     @Override
     public void onCreate() {
         super.onCreate();

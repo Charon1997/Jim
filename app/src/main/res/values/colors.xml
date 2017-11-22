@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="visible" type="id"/>
-    <item name="masked" type="id"/>
+    <item name="visible" type="id" />
+    <item name="masked" type="id" />
     <color name="colorPrimary">#03A9F4</color>
     <color name="colorPrimaryDark">#0174A7</color>
     <color name="colorPrimaryLight">#1DB9FF</color>

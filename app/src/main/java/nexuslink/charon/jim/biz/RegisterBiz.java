@@ -1,8 +1,14 @@
 package nexuslink.charon.jim.biz;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 
-import nexuslink.charon.jim.listener.OnClickableListener;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
+import nexuslink.charon.jim.listener.register.OnForgetListener;
+import nexuslink.charon.jim.listener.register.OnLoginListener;
+import nexuslink.charon.jim.listener.register.OnLogonListener;
+import nexuslink.charon.jim.model.RegisterModel;
 
 import static nexuslink.charon.jim.Constant.COUNT_DOWN_SECOND;
 
@@ -16,38 +22,46 @@ import static nexuslink.charon.jim.Constant.COUNT_DOWN_SECOND;
  * 修改备注：
  */
 
-public class RegisterBiz implements IRegisterBiz{
+public class RegisterBiz implements IRegisterBiz {
+
+
+
 
     @Override
-    public void login(String username, String code, String password, String password2) {
-
-    }
-
-    @Override
-    public void logon(String username, String password) {
-
-    }
-
-    @Override
-    public void forget(String username, String code, String password, String password2) {
-
-    }
-
-    @Override
-    public void getCode(String username, final OnClickableListener listener) {
-        CountDownTimer timer = new CountDownTimer(COUNT_DOWN_SECOND * 1000,1000) {
+    public void login(final String username, final String password, final OnLoginListener listener) {
+        JMessageClient.register(username, password, new BasicCallback() {
             @Override
-            public void onTick(long millisUntilFinished) {
-                listener.cannotClick(millisUntilFinished/1000+"秒后可重发");
+            public void gotResult(int i, String s) {
+                Log.d("TAG", "gotResult: "+i+"s"+s);
+                if (i == 0) {
+                    listener.success(new RegisterModel(username,password));
+                } else {
+                    listener.failed(s);
+                }
             }
-
-            @Override
-            public void onFinish() {
-                listener.canClick();
-            }
-        };
-        timer.start();
+        });
     }
+
+    @Override
+    public void logon(final String username, final String password, final OnLogonListener listener) {
+        JMessageClient.login(username, password, new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                Log.d("TAG", "gotResult: "+i+"s"+s);
+                if (i == 0) {
+                    listener.success(new RegisterModel(username,password));
+                } else {
+                    listener.failed(s);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void forget(String username, String password, OnForgetListener listener) {
+
+    }
+
 
 
 }
