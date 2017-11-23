@@ -20,10 +20,16 @@ import nexuslink.charon.jim.ui.fragment.BaseFragment;
  */
 
 public class GroupFragment extends BaseFragment {
+    private static GroupFragment instance = new GroupFragment();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_group_main, null);
         return view;
+    }
+
+    public static GroupFragment getInstance() {
+        return instance;
     }
 }

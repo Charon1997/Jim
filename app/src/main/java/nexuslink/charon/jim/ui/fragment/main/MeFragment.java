@@ -20,10 +20,16 @@ import nexuslink.charon.jim.ui.fragment.BaseFragment;
  */
 
 public class MeFragment extends BaseFragment {
+    private static MeFragment instance = new MeFragment();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_me_main, null);
         return view;
+    }
+
+    public static MeFragment getInstance() {
+        return instance;
     }
 }

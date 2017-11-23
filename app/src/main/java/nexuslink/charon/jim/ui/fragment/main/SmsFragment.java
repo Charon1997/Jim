@@ -20,10 +20,16 @@ import nexuslink.charon.jim.ui.fragment.BaseFragment;
  */
 
 public class SmsFragment extends BaseFragment {
+    private static SmsFragment instance = new SmsFragment();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_sms_main, null);
         return view;
     }
+
+    public static SmsFragment getInstance() {
+        return instance;
+    }
+
 }

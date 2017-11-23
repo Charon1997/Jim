@@ -1,9 +1,10 @@
 package nexuslink.charon.jim.ui.activity;
 
-
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.LayoutInflater;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,20 +16,31 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.List;
+
 import cn.jpush.im.android.api.JMessageClient;
 import nexuslink.charon.jim.R;
 import nexuslink.charon.jim.model.RegisterModel;
+import nexuslink.charon.jim.ui.fragment.BaseFragment;
+import nexuslink.charon.jim.ui.fragment.main.GroupFragment;
+import nexuslink.charon.jim.ui.fragment.main.MeFragment;
+import nexuslink.charon.jim.ui.fragment.main.SmsFragment;
 
 import static nexuslink.charon.jim.Constant.KEY_USER;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private BaseFragment currentNavFragment;
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private RegisterModel user;
     private ImageView ivHeadNav;
     private TextView tvNameNav,tvSubTitleNav;
+    private BottomNavigationView bnvCheck;
+
+    private List<BaseFragment> fragmentNavPool = Arrays.asList(SmsFragment.getInstance(), GroupFragment.getInstance(), MeFragment.getInstance());
 
     @Override
     protected int bindLayout() {
@@ -50,6 +62,50 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         initUser();
+
+        setDefaultFragment();
+
+        bnvCheck.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_nav_sms:
+                        switchFragment(currentNavFragment,fragmentNavPool.get(0));
+                        currentNavFragment = fragmentNavPool.get(0);
+                        toolbar.setTitle("消息");
+                        break;
+                    case R.id.menu_nav_group:
+                        switchFragment(currentNavFragment,fragmentNavPool.get(1));
+                        currentNavFragment = fragmentNavPool.get(1);
+                        toolbar.setTitle("群组");
+                        break;
+                    case R.id.menu_nav_me:
+                        switchFragment(currentNavFragment,fragmentNavPool.get(2));
+                        currentNavFragment = fragmentNavPool.get(2);
+                        toolbar.setTitle("我的");
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+    }
+
+    private void setDefaultFragment() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.add(R.id.content_main, currentNavFragment);
+        transaction.commit();
+        toolbar.setTitle("消息");
+    }
+
+    private void switchFragment(BaseFragment from, BaseFragment to) {
+        if (!to.isAdded()) {
+            getSupportFragmentManager().beginTransaction().add(R.id.content_main, to).commit();
+        }
+        getSupportFragmentManager().beginTransaction().hide(from).show(to).commit();
+
     }
 
     private void initUser() {
@@ -62,6 +118,8 @@ public class MainActivity extends BaseActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+        bnvCheck = (BottomNavigationView) findViewById(R.id.bnv_main);
+
         View view = navigationView.getHeaderView(0);
         ivHeadNav = (ImageView) view.findViewById(R.id.iv_head_nav);
         tvNameNav = (TextView) view.findViewById(R.id.tv_name_nav);
@@ -71,6 +129,8 @@ public class MainActivity extends BaseActivity
     @Override
     protected void initData() {
         user = (RegisterModel) getIntent().getSerializableExtra(KEY_USER);
+        //设置首页fragment
+        currentNavFragment = fragmentNavPool.get(0);
     }
 
     @Override
