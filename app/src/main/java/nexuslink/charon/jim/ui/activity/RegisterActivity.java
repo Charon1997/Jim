@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -43,7 +44,7 @@ import nexuslink.charon.jim.ui.fragment.LogonFragment;
  * 修改备注：
  */
 
-public class RegisterActivity extends AppCompatActivity implements RegisterContract.View {
+public class RegisterActivity extends BaseActivity implements RegisterContract.View {
     private EventHandler eventHandler;
 
     @BindView(R.id.viewpager_main)
@@ -55,12 +56,12 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
 
     LoginFragment loginFragment = new LoginFragment();
     LogonFragment logonFragment = new LogonFragment();
-    ForgetFragment forgetFragment =ForgetFragment.getInstance();
+    ForgetFragment forgetFragment = ForgetFragment.getInstance();
 
     private static RegisterActivity activity;
 
 
-    public static RegisterActivity getInstance(){
+    public static RegisterActivity getInstance() {
         if (activity == null) {
             activity = new RegisterActivity();
         }
@@ -68,42 +69,33 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // 透明状态栏
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        // 透明导航栏
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+    protected int bindLayout() {
+        return R.layout.activity_register;
+    }
 
-        setContentView(R.layout.activity_register);
+    @Override
+    protected View bindView() {
+        return null;
+    }
 
-        ButterKnife.bind(this);
-
-        PermissionGen.with(RegisterActivity.this).addRequestCode(100)
-                .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION
-                        , Manifest.permission.READ_PHONE_STATE).request();
-        initView();
-
-        sp = getSharedPreferences("register", MODE_PRIVATE);
-
+    @Override
+    protected void doSomething() {
         initSMS();
-
-
     }
 
     private void initSMS() {
         SMSSDK.setAskPermisionOnReadContact(true);
-        eventHandler = new EventHandler(){
+        eventHandler = new EventHandler() {
             @Override
             public void afterEvent(int i, int i1, Object o) {
                 int current = viewpagerMain.getCurrentItem();
-                if (o instanceof Throwable){
+                if (o instanceof Throwable) {
                     Throwable throwable = (Throwable) o;
                     String msg = throwable.getMessage();
                     if (current == 0) {
-                        loginFragment.showError(msg.substring(24,msg.length()-2 ));
+                        loginFragment.showError(msg.substring(24, msg.length() - 2));
                     } else {
-                        forgetFragment.showError(msg.substring(24,msg.length()-2 ));
+                        forgetFragment.showError(msg.substring(24, msg.length() - 2));
                     }
                 } else {
                     if (i1 == SMSSDK.RESULT_COMPLETE) {
@@ -149,7 +141,16 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
         SMSSDK.registerEventHandler(eventHandler);
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
+        // 透明状态栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        // 透明导航栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
+        setContentView(R.layout.activity_register);
+
+        ButterKnife.bind(this);
         loginFragment.setOnViewPagerScroll(new OnViewPagerScroll() {
             @Override
             public void leftScroll() {
@@ -164,7 +165,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
         logonFragment.setOnViewPagerScroll(new OnViewPagerScroll() {
             @Override
             public void leftScroll() {
-                viewpagerMain.setCurrentItem(0,true);
+                viewpagerMain.setCurrentItem(0, true);
             }
 
             @Override
@@ -175,7 +176,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
         forgetFragment.setOnViewPagerScroll(new OnViewPagerScroll() {
             @Override
             public void leftScroll() {
-                viewpagerMain.setCurrentItem(1,true);
+                viewpagerMain.setCurrentItem(1, true);
             }
 
             @Override
@@ -189,7 +190,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
         viewList.add(forgetFragment);
 
         viewpagerMain.setScrollMode(UltraViewPager.ScrollMode.HORIZONTAL);
-        adapter = new RegisterPagerAdapter(getSupportFragmentManager(),viewList);
+        adapter = new RegisterPagerAdapter(getSupportFragmentManager(), viewList);
         viewpagerMain.setAdapter(adapter);
 
         viewpagerMain.initIndicator();
@@ -203,6 +204,14 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
 
     }
 
+    @Override
+    protected void initData() {
+        PermissionGen.with(RegisterActivity.this).addRequestCode(100)
+                .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION
+                        , Manifest.permission.READ_PHONE_STATE).request();
+        sp = getSharedPreferences("register", MODE_PRIVATE);
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -211,12 +220,12 @@ public class RegisterActivity extends AppCompatActivity implements RegisterContr
     }
 
     @PermissionSuccess(requestCode = 100)
-    public void doSomething() {
+    public void doSuccess() {
         Toast.makeText(this, "已经获取权限", Toast.LENGTH_SHORT).show();
     }
 
     @PermissionFail(requestCode = 100)
-    public void doFailSomething() {
+    public void doFail() {
         Toast.makeText(this, "获取权限失败", Toast.LENGTH_SHORT).show();
     }
 

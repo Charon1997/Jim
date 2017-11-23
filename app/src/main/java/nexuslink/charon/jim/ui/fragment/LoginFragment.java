@@ -47,7 +47,7 @@ import static nexuslink.charon.jim.Constant.PHONE_LENGTH;
  * 修改备注：
  */
 
-public class LoginFragment extends Fragment implements RegisterContract.View.Login {
+public class LoginFragment extends BaseFragment implements RegisterContract.View.Login {
     @BindView(R.id.logo_login)
     ImageView logoLogin;
     @BindView(R.id.et_username_login_register)
@@ -73,6 +73,7 @@ public class LoginFragment extends Fragment implements RegisterContract.View.Log
     private CountDownTimer timer;
     private static final String TAG = LoginFragment.class.getSimpleName();
     private ProgressDialog progressDialog;
+
     public void setOnViewPagerScroll(OnViewPagerScroll scroll) {
         if (this.scroll == null) {
             this.scroll = scroll;
@@ -139,7 +140,6 @@ public class LoginFragment extends Fragment implements RegisterContract.View.Log
         }
     }
 
-
     private String view2String(EditText et) {
         return et.getText().toString().trim();
     }
@@ -187,14 +187,7 @@ public class LoginFragment extends Fragment implements RegisterContract.View.Log
 
     @Override
     public void loading(boolean loading) {
-         progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("正在注册");
-        progressDialog.setTitle("注册");
-        if (loading) {
-            progressDialog.show();
-        } else {
-            progressDialog.cancel();
-        }
+        super.loading(loading,"注册","正在注册",0);
     }
 
     @Override

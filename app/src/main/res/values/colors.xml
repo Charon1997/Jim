@@ -11,4 +11,5 @@
     <color name="hintColor">#e7e7e7</color>
     <color name="textYellow">#ffeb3b</color>
     <color name="light_gray">#c7c7c7c7</color>
+    <color name="light_orange">#ff8c28</color>
 </resources>

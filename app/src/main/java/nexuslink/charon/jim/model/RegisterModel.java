@@ -1,5 +1,7 @@
 package nexuslink.charon.jim.model;
 
+import java.io.Serializable;
+
 import nexuslink.charon.jim.contract.RegisterContract;
 
 /**
@@ -12,7 +14,7 @@ import nexuslink.charon.jim.contract.RegisterContract;
  * 修改备注：
  */
 
-public class RegisterModel implements RegisterContract.Model {
+public class RegisterModel implements RegisterContract.Model,Serializable {
     private String username;
     private String password;
 

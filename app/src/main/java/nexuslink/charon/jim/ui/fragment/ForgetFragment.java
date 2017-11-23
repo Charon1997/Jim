@@ -47,7 +47,7 @@ import static nexuslink.charon.jim.Constant.PHONE_LENGTH;
  * 修改备注：
  */
 
-public class ForgetFragment extends Fragment implements RegisterContract.View.Forget {
+public class ForgetFragment extends BaseFragment implements RegisterContract.View.Forget {
     private static ForgetFragment instance;
     @BindView(R.id.logo_forget)
     ImageView logoForget;
@@ -188,14 +188,7 @@ public class ForgetFragment extends Fragment implements RegisterContract.View.Fo
 
     @Override
     public void loading(boolean loading) {
-         progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("正在修改");
-        progressDialog.setTitle("忘记密码");
-        if (loading) {
-            progressDialog.show();
-        } else {
-            progressDialog.cancel();
-        }
+        super.loading(loading, "忘记密码", "正在修改", 2);
     }
 
     @Override

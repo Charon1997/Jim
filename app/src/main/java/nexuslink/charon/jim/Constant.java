@@ -32,4 +32,11 @@ public class Constant {
      * 倒计时时间
      */
     public static final int COUNT_DOWN_SECOND = 60;
+
+
+    /**
+     * Intent的key
+     */
+    public static final String KEY_USER = "user";
 }
+

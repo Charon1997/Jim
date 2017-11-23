@@ -28,9 +28,10 @@ public class LogonPresenter implements RegisterContract.Presenter.Logon {
 
     @Override
     public void send() {
-        view.loading(true);
+
         String msg = view.check();
         if (msg.equals("正确")){
+            view.loading(true);
             biz.logon(view.getUsername(), view.getPassword(), new OnLogonListener() {
                 @Override
                 public void success(RegisterModel user) {

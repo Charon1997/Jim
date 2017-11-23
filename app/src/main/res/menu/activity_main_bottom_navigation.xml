@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/sms"
+        android:title="消息"
+        android:icon="@drawable/ic_sms"/>
+    <item android:id="@+id/group"
+        android:title="群组"
+        android:icon="@drawable/ic_group"/>
+    <item android:id="@+id/me"
+        android:title="我的"
+        android:icon="@drawable/ic_person"/>
+</menu>
