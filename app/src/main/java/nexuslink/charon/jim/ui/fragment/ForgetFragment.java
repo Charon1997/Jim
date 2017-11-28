@@ -131,6 +131,7 @@ public class ForgetFragment extends BaseFragment implements RegisterContract.Vie
                 //验证验证码
                 if (check().equals("正确")) {
                     //验证
+                    loading(true);
                     SMSSDK.submitVerificationCode("86", getUsername(), getCode());
                 } else {
                     showError(check());

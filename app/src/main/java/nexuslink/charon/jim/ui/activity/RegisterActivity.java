@@ -93,8 +93,10 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
                     Throwable throwable = (Throwable) o;
                     String msg = throwable.getMessage();
                     if (current == 0) {
+                        loginFragment.loading(false);
                         loginFragment.showError(msg.substring(24, msg.length() - 2));
                     } else {
+                        forgetFragment.loading(false);
                         forgetFragment.showError(msg.substring(24, msg.length() - 2));
                     }
                 } else {
@@ -127,7 +129,6 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
                                         forgetFragment.countDown();
                                     }
                                 });
-
                             }
                         } else if (i == SMSSDK.EVENT_GET_VOICE_VERIFICATION_CODE) {
                             //语音
@@ -208,7 +209,7 @@ public class RegisterActivity extends BaseActivity implements RegisterContract.V
     protected void initData() {
         PermissionGen.with(RegisterActivity.this).addRequestCode(100)
                 .permissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION
-                        , Manifest.permission.READ_PHONE_STATE).request();
+                        , Manifest.permission.READ_PHONE_STATE,Manifest.permission.VIBRATE).request();
         sp = getSharedPreferences("register", MODE_PRIVATE);
     }
 

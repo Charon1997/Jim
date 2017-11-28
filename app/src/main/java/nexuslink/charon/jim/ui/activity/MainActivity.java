@@ -1,10 +1,13 @@
 package nexuslink.charon.jim.ui.activity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,11 +18,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.List;
 
+import cn.jpush.im.android.api.ContactManager;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetUserInfoListCallback;
+import cn.jpush.im.android.api.model.UserInfo;
 import nexuslink.charon.jim.R;
 import nexuslink.charon.jim.model.RegisterModel;
 import nexuslink.charon.jim.ui.fragment.BaseFragment;
@@ -27,7 +34,9 @@ import nexuslink.charon.jim.ui.fragment.main.GroupFragment;
 import nexuslink.charon.jim.ui.fragment.main.MeFragment;
 import nexuslink.charon.jim.ui.fragment.main.SmsFragment;
 
+import static nexuslink.charon.jim.Constant.HAVE_USER;
 import static nexuslink.charon.jim.Constant.KEY_USER;
+import static nexuslink.charon.jim.Constant.USER;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,7 +50,7 @@ public class MainActivity extends BaseActivity
     private BottomNavigationView bnvCheck;
 
     private List<BaseFragment> fragmentNavPool = Arrays.asList(SmsFragment.getInstance(), GroupFragment.getInstance(), MeFragment.getInstance());
-
+    private SharedPreferences sp;
     @Override
     protected int bindLayout() {
         return R.layout.activity_main;
@@ -62,7 +71,6 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         initUser();
-
         setDefaultFragment();
 
         bnvCheck.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -91,6 +99,8 @@ public class MainActivity extends BaseActivity
             }
         });
     }
+
+
 
     private void setDefaultFragment() {
         FragmentManager fm = getSupportFragmentManager();
@@ -146,7 +156,7 @@ public class MainActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_add_friend, menu);
         return true;
     }
 
@@ -158,12 +168,16 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.menu_sms_add) {
+            Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
+            startActivity(intent);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -181,14 +195,24 @@ public class MainActivity extends BaseActivity
 
         } else if (id == R.id.nav_share) {
 
+            Intent intent = new Intent(MainActivity.this, AddedFriendActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_send) {
+            sp = getSharedPreferences(USER, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putBoolean(HAVE_USER, false);
+            editor.apply();
             JMessageClient.logout();
             //判断是否退出
             finish();
+            Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 }

@@ -28,7 +28,6 @@ public class ForgetPresenter implements RegisterContract.Presenter.Forget {
 
     @Override
     public void send() {
-        view.loading(true);
         biz.forget(view.getUsername(),  view.getPassword()
                 , new OnForgetListener() {
                     @Override

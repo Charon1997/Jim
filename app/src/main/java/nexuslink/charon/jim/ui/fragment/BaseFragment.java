@@ -22,32 +22,33 @@ public abstract class BaseFragment extends Fragment {
         final ForgetFragment forgetFragment = new ForgetFragment();
 
         if (dialog == null) {
-            dialog = new ProgressDialog(getContext());
+            dialog = new ProgressDialog(getActivity());
             dialog.setTitle(title);
             dialog.setMessage(msg);
         }
         if (loading) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (dialog.isShowing()){
-                        dialog.dismiss();
-                        switch (position){
-                            case 0:
-                                loginFragment.showError("请检查网络状态");
-                                break;
-                            case 1:
-                                logonFragment.showError("请检查网络状态");
-                                break;
-                            case 2:
-                                forgetFragment.showError("请检查网络状态");
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-            },5000);
+            dialog.show();
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (dialog.isShowing()){
+//                        dialog.dismiss();
+//                        switch (position){
+//                            case 0:
+//                                loginFragment.showError("请检查网络状态");
+//                                break;
+//                            case 1:
+//                                logonFragment.showError("请检查网络状态");
+//                                break;
+//                            case 2:
+//                                forgetFragment.showError("请检查网络状态");
+//                                break;
+//                            default:
+//                                break;
+//                        }
+//                    }
+//                }
+//            },7000);
         }else {
             dialog.dismiss();
         }

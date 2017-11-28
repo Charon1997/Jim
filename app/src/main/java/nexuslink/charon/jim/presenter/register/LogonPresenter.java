@@ -30,12 +30,13 @@ public class LogonPresenter implements RegisterContract.Presenter.Logon {
     public void send() {
 
         String msg = view.check();
-        if (msg.equals("正确")){
+        if ("正确".equals(msg)) {
             view.loading(true);
             biz.logon(view.getUsername(), view.getPassword(), new OnLogonListener() {
                 @Override
                 public void success(RegisterModel user) {
                     //修改数据库中的账号密码
+
                     view.success(user);
                     view.showError("登录成功");
                     view.loading(false);
@@ -43,7 +44,7 @@ public class LogonPresenter implements RegisterContract.Presenter.Logon {
 
                 @Override
                 public void failed(String msg) {
-                    view.showError("登录失败"+msg);
+                    view.showError("登录失败" + msg);
                     view.loading(false);
                 }
             });

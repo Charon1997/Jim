@@ -1,9 +1,11 @@
 package nexuslink.charon.jim.utils;
 
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 
 import nexuslink.charon.jim.model.RegisterModel;
 
@@ -68,5 +70,9 @@ public class SystemUtil {
             Log.e("TAG", "readTime: " + e);
         }
         return time;
+    }
+
+    public static String et2String(EditText et) {
+        return et.getText().toString().trim();
     }
 }

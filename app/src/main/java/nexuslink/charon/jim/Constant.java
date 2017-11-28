@@ -38,5 +38,15 @@ public class Constant {
      * Intent的key
      */
     public static final String KEY_USER = "user";
+
+    public static final String HAVE_USER = "HAVE_USER";
+
+    public static final String USERNAME = "USERNAME";
+    public static final String PASSWORD = "PASSWORD";
+
+    /**
+     * SP的name
+     */
+    public static final String USER = "USER";
 }
 

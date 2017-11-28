@@ -31,7 +31,7 @@ public class LoginPresenter implements RegisterContract.Presenter.Login {
 
     @Override
     public void send() {
-        view.loading(true);
+        //view.loading(true);
         biz.login(view.getUsername(), view.getPassword()
                 , new OnLoginListener() {
                     @Override

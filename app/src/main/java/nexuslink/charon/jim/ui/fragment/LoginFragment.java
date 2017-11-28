@@ -127,6 +127,7 @@ public class LoginFragment extends BaseFragment implements RegisterContract.View
                 //presenter.send();
                 if (check().equals("正确")) {
                     //验证
+                    loading(true);
                     SMSSDK.submitVerificationCode("86", getUsername(), getCode());
                 } else {
                     showError(check());
@@ -187,11 +188,11 @@ public class LoginFragment extends BaseFragment implements RegisterContract.View
 
     @Override
     public void loading(boolean loading) {
-        super.loading(loading,"注册","正在注册",0);
+        super.loading(loading, "注册", "正在注册", 0);
     }
 
     @Override
-    public void showError(String msg) {
+    public  void showError(String msg) {
         Snackbar.make(layoutLogin, msg, Snackbar.LENGTH_SHORT).show();
     }
 

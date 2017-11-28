@@ -24,9 +24,6 @@ import static nexuslink.charon.jim.Constant.COUNT_DOWN_SECOND;
 
 public class RegisterBiz implements IRegisterBiz {
 
-
-
-
     @Override
     public void login(final String username, final String password, final OnLoginListener listener) {
         JMessageClient.register(username, password, new BasicCallback() {
@@ -59,7 +56,8 @@ public class RegisterBiz implements IRegisterBiz {
 
     @Override
     public void forget(String username, String password, OnForgetListener listener) {
-
+        //需要更新前密码
+        //JMessageClient.updateUserPassword();
     }
 
 

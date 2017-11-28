@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/iv_head_added"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/tv_name_added"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/iv_head_added"
+        android:layout_marginStart="8dp"
+        android:layout_toRightOf="@id/iv_head_added"
+        android:text="Charon"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_22sp" />
+
+    <TextView
+        android:id="@+id/tv_reason_added"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name_added"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_toRightOf="@id/iv_head_added"
+        android:maxLines="3"
+        android:text="我是一直小绵羊我是一直小绵羊我是一直小绵小绵羊我是一直小绵羊我是一直小绵羊"
+        android:textColor="@color/black" />
+
+    <RelativeLayout
+        android:id="@+id/rl_layout_added"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:layout_toRightOf="@id/tv_reason_added">
+
+        <Button
+            android:id="@+id/btn_pass_added"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:background="@color/colorPrimaryLight"
+            android:layout_marginBottom="4dp"
+            android:text="同意" />
+
+        <Button
+            android:id="@+id/btn_declined_added"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/btn_pass_added"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:background="@color/colorAccent"
+            android:text="拒绝" />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/tv_handler_added"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/tv_reason_added"
+        android:gravity="center"
+        android:text="已处理"
+        android:visibility="gone"
+        android:textSize="@dimen/text_normal"/>
+
+
+</RelativeLayout>

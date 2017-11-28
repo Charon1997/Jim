@@ -4,6 +4,7 @@ package nexuslink.charon.jim.ui.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -29,7 +30,11 @@ import nexuslink.charon.jim.model.RegisterModel;
 import nexuslink.charon.jim.presenter.register.LogonPresenter;
 import nexuslink.charon.jim.utils.SystemUtil;
 
+import static nexuslink.charon.jim.Constant.HAVE_USER;
 import static nexuslink.charon.jim.Constant.KEY_USER;
+import static nexuslink.charon.jim.Constant.PASSWORD;
+import static nexuslink.charon.jim.Constant.USER;
+import static nexuslink.charon.jim.Constant.USERNAME;
 
 /**
  * 项目名称：Jim
@@ -61,6 +66,7 @@ public class LogonFragment extends BaseFragment implements RegisterContract.View
     private OnViewPagerScroll scroll;
     private LogonPresenter presenter = new LogonPresenter(this);
     private ProgressDialog progressDialog;
+    private SharedPreferences sp;
 
     public void setOnViewPagerScroll(OnViewPagerScroll scroll) {
         if (this.scroll == null) {
@@ -109,6 +115,12 @@ public class LogonFragment extends BaseFragment implements RegisterContract.View
 
     @Override
     public void success(RegisterModel user) {
+        sp = getActivity().getSharedPreferences(USER, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(HAVE_USER, true);
+        editor.putString(PASSWORD, user.getPassword());
+        editor.putString(USERNAME, user.getUsername());
+        editor.apply();
         Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.putExtra(KEY_USER, user);
         startActivity(intent);
@@ -120,7 +132,6 @@ public class LogonFragment extends BaseFragment implements RegisterContract.View
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_to_login_logon_register:
-
                 scroll.leftScroll();
                 break;
             case R.id.tv_to_forget_logon_register:
@@ -129,7 +140,6 @@ public class LogonFragment extends BaseFragment implements RegisterContract.View
             case R.id.btn_send_logon_register:
                 SystemUtil.hideSoftKeyboard((InputMethodManager)
                         getActivity().getSystemService(Context.INPUT_METHOD_SERVICE), getActivity().getWindow());
-
                 presenter.send();
                 break;
             default:

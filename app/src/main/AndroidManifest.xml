@@ -31,33 +31,43 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+
     <application
-        android:allowBackup="true"
         android:name=".BaseApplication"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".ui.activity.RegisterActivity"
-            android:label="@string/app_name"
-            android:theme="@style/NOActionTheme">
+            android:name=".ui.activity.WelcomeActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name="com.mob.tools.MobUIShell"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.mob.tools.MobUIShell"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".ui.activity.AddFriendActivity" />
+        <activity android:name=".ui.activity.AddedFriendActivity" />
+        <activity android:name=".ui.activity.RegisterActivity"
+            android:theme="@style/NOActionTheme"/>
 
-        <meta-data android:name="Mob-AppKey" android:value="228d8753d4da2"/>
-        <meta-data android:name="Mob-AppSecret" android:value="c1d40424423b5ea0c8444b9c0144d81e"/>
+        <meta-data
+            android:name="Mob-AppKey"
+            android:value="228d8753d4da2" />
+        <meta-data
+            android:name="Mob-AppSecret"
+            android:value="c1d40424423b5ea0c8444b9c0144d81e" />
     </application>
 
 </manifest>
