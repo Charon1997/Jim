@@ -51,7 +51,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public void run() {
                 checkUser(sp.getBoolean(HAVE_USER, false));
             }
-        }, 1550);
+        }, 1050);
 
     }
 
@@ -79,7 +79,7 @@ public class WelcomeActivity extends AppCompatActivity {
         ObjectAnimator ob = ObjectAnimator.ofFloat(ivWelcome, "Alpha", 0.0f, 1.0f);
         AnimatorSet set = new AnimatorSet();
         set.play(ob);
-        set.setDuration(1500);
+        set.setDuration(1000);
         set.start();
     }
 

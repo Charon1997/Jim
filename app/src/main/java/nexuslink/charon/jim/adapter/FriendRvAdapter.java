@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import nexuslink.charon.jim.R;
+import nexuslink.charon.jim.listener.main.OnItemClickListener;
 import nexuslink.charon.jim.model.UserInfo;
 
 /**
@@ -29,10 +31,17 @@ import nexuslink.charon.jim.model.UserInfo;
 public class FriendRvAdapter extends RecyclerView.Adapter {
     private List<UserInfo> userList;
     private Context mContext;
+    private OnItemClickListener listener;
 
     public FriendRvAdapter(List<UserInfo> userList,Context mContext) {
         this.userList = userList;
         this.mContext = mContext;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        if (this.listener == null) {
+            this.listener = listener;
+        }
     }
 
     @Override
@@ -42,10 +51,11 @@ public class FriendRvAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
 //        if (!"null".equals(userList.get(position).getAvatarMediaID())){
 //            Glide.with(mContext).load(userList.get(position).getAvatarMediaID()).into(((MyViewHolder)holder).mIvHead);
 //        }
+
         String nickName = userList.get(position).getNickname();
         if (!"".equals(nickName) && nickName != null) {
             ((MyViewHolder) holder).mTvName.setText(nickName);
@@ -53,16 +63,24 @@ public class FriendRvAdapter extends RecyclerView.Adapter {
             ((MyViewHolder) holder).mTvName.setText(userList.get(position).getUserName());
         }
 
+        ((MyViewHolder)holder).mRlView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClick(position);
+            }
+        });
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    private class MyViewHolder extends RecyclerView.ViewHolder {
         private ImageView mIvHead;
         private TextView mTvName;
+        private RelativeLayout mRlView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             mIvHead = (ImageView) itemView.findViewById(R.id.iv_head_friend);
             mTvName = (TextView) itemView.findViewById(R.id.tv_name_friend);
+            mRlView = (RelativeLayout) itemView.findViewById(R.id.rl_layout_friend);
         }
     }
 

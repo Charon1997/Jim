@@ -61,6 +61,7 @@
         <activity android:name=".ui.activity.AddedFriendActivity" />
         <activity android:name=".ui.activity.RegisterActivity"
             android:theme="@style/NOActionTheme"/>
+        <activity android:name=".ui.activity.ChatActivity"/>
 
         <meta-data
             android:name="Mob-AppKey"

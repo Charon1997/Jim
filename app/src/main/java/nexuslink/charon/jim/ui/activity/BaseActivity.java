@@ -14,9 +14,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.content.ImageContent;
+import cn.jpush.im.android.api.content.TextContent;
+import cn.jpush.im.android.api.content.VoiceContent;
 import cn.jpush.im.android.api.event.ContactNotifyEvent;
+import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.api.event.NotificationClickEvent;
+import cn.jpush.im.android.api.event.OfflineMessageEvent;
+import cn.jpush.im.android.api.model.Message;
 import nexuslink.charon.jim.R;
 import nexuslink.charon.jim.model.AddedBean;
+import nexuslink.charon.jim.model.ChatModel;
+
+import static nexuslink.charon.jim.Constant.NICKNAME;
+import static nexuslink.charon.jim.Constant.TEXT;
+import static nexuslink.charon.jim.Constant.USERNAME;
 
 /**
  * 项目名称：Jim
@@ -114,6 +126,52 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         notificationManager.notify(0, mBuilder.build());
 
+    }
+
+    public void onEvent(MessageEvent event) {
+        Message msg = event.getMessage();
+        Log.d("tag","msg"+msg.toString());
+        switch (msg.getContentType()) {
+            case text:
+                //处理文字消息
+                TextContent textContent = (TextContent) msg.getContent();
+                ChatModel chat = new ChatModel();
+                chat.setUserInfo(msg.getFromUser());
+                chat.setCreateTime(msg.getCreateTime());
+                chat.setType(TEXT);
+                chat.setMessageText(textContent.getText());
+                ChatActivity.chatList.add(chat);
+                ChatActivity.rvChat.notify();
+                break;
+            case image:
+                //处理图片消息
+                ImageContent imageContent = (ImageContent) msg.getContent();
+                imageContent.getLocalPath();//图片本地地址
+                imageContent.getLocalThumbnailPath();//图片对应缩略图的本地地址
+                break;
+            case voice:
+                //处理语音消息
+                VoiceContent voiceContent = (VoiceContent) msg.getContent();
+                voiceContent.getLocalPath();//语音文件本地地址
+                voiceContent.getDuration();//语音文件时长
+                break;
+            case custom:
+                //处理自定义消息
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void onEvent(NotificationClickEvent event) {
+        //通知栏点击事件
+        Intent notificationIntent = new Intent(BaseActivity.this, ChatActivity.class);
+        Message message = event.getMessage();
+        String username = message.getFromUser().getUserName();
+        String nickname = message.getFromUser().getNickname();
+        notificationIntent.putExtra(USERNAME, username);
+        notificationIntent.putExtra(NICKNAME, nickname);
+        startActivity(notificationIntent);
     }
 
 }

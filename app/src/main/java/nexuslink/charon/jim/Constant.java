@@ -44,9 +44,17 @@ public class Constant {
     public static final String USERNAME = "USERNAME";
     public static final String PASSWORD = "PASSWORD";
 
+    public static final String NICKNAME = "NICKNAME";
+
     /**
      * SP的name
      */
     public static final String USER = "USER";
+
+    /**
+     * chat的type
+     */
+    public static final int TEXT = 0X00;
+    public static final int IMAGE = 0X01;
 }
 

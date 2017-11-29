@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
+    <ImageView
+        android:id="@+id/iv_head_left_chat"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/ic_launcher"/>
+    <TextView
+        android:id="@+id/tv_msg_left_chat"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="128dp"
+        android:visibility="gone"
+        android:text="哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈"
+        android:textColor="@color/black"
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/iv_msg_left_chat"
+        android:visibility="gone"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_marginStart="8dp"
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/test"
+        />
+</LinearLayout>
