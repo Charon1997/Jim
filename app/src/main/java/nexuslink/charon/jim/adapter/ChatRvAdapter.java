@@ -2,6 +2,7 @@ package nexuslink.charon.jim.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,8 @@ import static nexuslink.charon.jim.Constant.TEXT;
  */
 
 public class ChatRvAdapter extends RecyclerView.Adapter {
+    private static final String TAG = ChatRvAdapter.class.getSimpleName();
+
     private List<ChatModel> chatList;
     private Context mContext;
 
@@ -38,6 +41,7 @@ public class ChatRvAdapter extends RecyclerView.Adapter {
     private int RIGHT_MESSAGE = 0x01;
 
     public ChatRvAdapter(List<ChatModel> chatList, Context mContext) {
+        Log.d(TAG, "ChatRvAdapter");
         this.chatList = chatList;
         this.mContext = mContext;
     }
@@ -45,18 +49,24 @@ public class ChatRvAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View view;
-        if (viewType == LEFT_MESSAGE ) {
+        if (viewType == LEFT_MESSAGE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_left_chat_rv, null);
+            Log.d(TAG, "onCreateViewHolder-->left");
             return new LeftViewHolder(view);
-        } else {
+        } else if (viewType == RIGHT_MESSAGE) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_right_chat_rv, null);
+            Log.d(TAG, "onCreateViewHolder-->right");
             return new RightViewHolder(view);
+        } else {
+            return null;
         }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        Log.d(TAG, "onBindViewHolder"+position);
         if (holder instanceof LeftViewHolder) {
             switch (chatList.get(position).getType()) {
                 case TEXT:
@@ -92,9 +102,12 @@ public class ChatRvAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (chatList.get(position).isMyMessage()) {
+
+        if (isMyMessage(position)) {
+            Log.d(TAG, "getItemViewType: --->right"+position);
             return RIGHT_MESSAGE;
         } else {
+            Log.d(TAG, "getItemViewType: --->left"+position);
             return LEFT_MESSAGE;
         }
     }

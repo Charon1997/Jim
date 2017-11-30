@@ -1,14 +1,18 @@
 package nexuslink.charon.jim.ui.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -67,6 +71,7 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
     private Message message;
 
     private SharedPreferences sp;
+    static ChatRvAdapter adapter;
 
     //// TODO: 2017/11/29 List的泛型改一改
     static List<ChatModel> chatList = new ArrayList<>();
@@ -90,10 +95,12 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
 
     private void initChat() {
         //获取单个单聊会话
+        chatList.clear();
         conversation = JMessageClient.getSingleConversation(username);
         Log.d("TAG", "conversation" + conversation.toString() + "");
-        //// TODO: 2017/11/29 allmessage不一样 
-        for (int i = 0,size = conversation.getAllMessage().size();i < size;i++) {
+        //// TODO: 2017/11/29 allmessage不一样
+        int size = conversation.getAllMessage().size() > 40 ? 40 : conversation.getAllMessage().size();
+        for (int i = conversation.getAllMessage().size()-1; i > conversation.getAllMessage().size() - size; i--) {
             Message message = conversation.getAllMessage().get(i);
             if (message != null) {
                 ChatModel chat = new ChatModel();
@@ -113,22 +120,23 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
                     default:
                         break;
                 }
-                if (message.getFromUser().getUserName().equals(sp.getString(USERNAME, ""))){
+                if (message.getFromUser().getUserName().equals(sp.getString(USERNAME, ""))) {
                     //如果是自己发的
                     chat.setMyMessage(true);
                 } else {
                     chat.setMyMessage(false);
                 }
-                chatList.add(chat);
+                chatList.add( chat);
             }
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void initView() {
         ButterKnife.bind(this);
         setSupportActionBar(toolbarChat);
-        if (!"null".equals(nickname) && !"".equals(nickname) && nickname !=null){
+        if (!"null".equals(nickname) && !"".equals(nickname) && nickname != null) {
             getSupportActionBar().setTitle(nickname);
         } else {
             getSupportActionBar().setTitle(username);
@@ -140,12 +148,35 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
                 finish();
             }
         });
+
         rvChat = (RecyclerView) findViewById(R.id.rv_chat);
         LinearLayoutManager manager = new LinearLayoutManager(this);
+        //1.滑到底部
+        //manager.setStackFromEnd(true);
+        //2.将列表反过来
+        manager.setReverseLayout(true);
         rvChat.setLayoutManager(manager);
         rvChat.setItemAnimator(new DefaultItemAnimator());
-        ChatRvAdapter adapter = new ChatRvAdapter(chatList, this);
+        adapter = new ChatRvAdapter(chatList, this);
+        //rvChat.setHasFixedSize(true);
         rvChat.setAdapter(adapter);
+        rvChat.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Log.d("scroll", dy + "y");
+                if (dy > 0) {
+                    //向下滑动
+                    SystemUtil.hideSoftKeyboard((InputMethodManager)
+                            getSystemService(Context.INPUT_METHOD_SERVICE), getWindow());
+                }
+            }
+        });
     }
 
     @Override
@@ -172,9 +203,11 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
                     chat.setType(TEXT);
                     chat.setCreateTime(message.getCreateTime());
                     chat.setMessageText(textContent.getText());
-                    chatList.add(chat);
+                    //chatList.add(0,chat);
                     etChat.setText("");
-                    rvChat.notify();
+                    //chatList.notifyAll();
+                    notifyItem(chat);
+                    //adapter.notifyItemInserted(chatList.size());
                     Toast.makeText(ChatActivity.this, "发送成功", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(ChatActivity.this, s, Toast.LENGTH_SHORT).show();
@@ -185,7 +218,32 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("tag", "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("tag", "onStop");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("tag", "onResume");
+    }
+
+    @Override
     public String getEditText() {
         return etChat.getText().toString().trim();
+    }
+
+    public static void notifyItem(ChatModel chat) {
+        Log.d("ChatRv", "notify");
+        chatList.add(0, chat);
+        adapter.notifyDataSetChanged();
+        rvChat.smoothScrollToPosition(0);
     }
 }

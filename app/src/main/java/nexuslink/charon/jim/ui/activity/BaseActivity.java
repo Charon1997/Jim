@@ -25,6 +25,7 @@ import cn.jpush.im.android.api.model.Message;
 import nexuslink.charon.jim.R;
 import nexuslink.charon.jim.model.AddedBean;
 import nexuslink.charon.jim.model.ChatModel;
+import nexuslink.charon.jim.utils.SystemUtil;
 
 import static nexuslink.charon.jim.Constant.NICKNAME;
 import static nexuslink.charon.jim.Constant.TEXT;
@@ -42,13 +43,14 @@ import static nexuslink.charon.jim.Constant.USERNAME;
 
 public abstract class BaseActivity extends AppCompatActivity {
     private View mContextView = null;
+    private static long msgId = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = bindView();
         if (view == null) {
-            mContextView = LayoutInflater.from(this).inflate(bindLayout(),null);
+            mContextView = LayoutInflater.from(this).inflate(bindLayout(), null);
         } else {
             mContextView = view;
         }
@@ -65,6 +67,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         JMessageClient.unRegisterEventReceiver(this);
         super.onDestroy();
     }
+
     protected abstract int bindLayout();
 
     protected abstract View bindView();
@@ -74,6 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected abstract void initView();
 
     protected abstract void initData();
+
     public void onEvent(ContactNotifyEvent event) {
         String reason = event.getReason();
         String fromUsername = event.getFromUsername();
@@ -86,28 +90,28 @@ public abstract class BaseActivity extends AppCompatActivity {
                 AddedFriendActivity.appkey = appkey;
                 AddedFriendActivity.reason = reason;
                 AddedFriendActivity.fromUsername = fromUsername;
-                AddedFriendActivity.addedList.add(new AddedBean(null, fromUsername, reason,false));
-                Log.d("tag", "onPass: reason "+reason+"appkey"+appkey+"username"+ fromUsername);
-                notification(AddedFriendActivity.class,fromUsername+"请求添加你为好友");
+                AddedFriendActivity.addedList.add(new AddedBean(null, fromUsername, reason, false));
+                Log.d("tag", "onPass: reason " + reason + "appkey" + appkey + "username" + fromUsername);
+                notification(AddedFriendActivity.class, fromUsername + "请求添加你为好友");
                 break;
             case invite_accepted://对方接收了你的好友邀请
                 //...
-                notification(null,fromUsername+"接收了你的好友请求");
+                notification(null, fromUsername + "接收了你的好友请求");
                 break;
             case invite_declined://对方拒绝了你的好友邀请
                 //...
-                notification(null,fromUsername+"拒绝了你的好友请求，并说：“"+reason+"“");
+                notification(null, fromUsername + "拒绝了你的好友请求，并说：“" + reason + "“");
                 break;
             case contact_deleted://对方将你从好友中删除
                 //...
-                notification(null,"喔噢，"+fromUsername+"把你删除咯");
+                notification(null, "喔噢，" + fromUsername + "把你删除咯");
                 break;
             default:
                 break;
         }
     }
 
-    private void notification(Class activityClass,String msg) {
+    private void notification(Class activityClass, String msg) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         NotificationCompat.Builder mBuilder =
@@ -116,11 +120,10 @@ public abstract class BaseActivity extends AppCompatActivity {
                         .setContentTitle("Jim")
                         .setContentText(msg)
                         .setSound(Uri.withAppendedPath(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, "6"))
-                        .setVibrate(new long[] {1000,200,1000,200,1000})
-                ;
+                        .setVibrate(new long[]{1000, 200, 1000, 200, 1000});
         if (activityClass != null) {
             PendingIntent contentIntent = PendingIntent.getActivity(
-                    this, 0, new Intent(this,activityClass ), PendingIntent.FLAG_UPDATE_CURRENT);
+                    this, 0, new Intent(this, activityClass), PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(contentIntent);
         }
 
@@ -130,18 +133,27 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void onEvent(MessageEvent event) {
         Message msg = event.getMessage();
-        Log.d("tag","msg"+msg.toString());
+
+        if (msgId == msg.getServerMessageId()) {
+            return;
+        } else {
+            msgId = msg.getServerMessageId();
+        }
+        Log.d("tag", "msg" + msg.toString());
         switch (msg.getContentType()) {
             case text:
                 //处理文字消息
                 TextContent textContent = (TextContent) msg.getContent();
                 ChatModel chat = new ChatModel();
                 chat.setUserInfo(msg.getFromUser());
-                chat.setCreateTime(msg.getCreateTime());
+                chat.setMyMessage(false);
                 chat.setType(TEXT);
+                chat.setCreateTime(msg.getCreateTime());
                 chat.setMessageText(textContent.getText());
-                ChatActivity.chatList.add(chat);
-                ChatActivity.rvChat.notify();
+                Log.d("tag", "onEvent: "+ChatActivity.chatList.get(0).getMessageText());
+                //ChatActivity.chatList.add(0, chat);
+                Log.d("tag", "onEvent: "+ChatActivity.chatList.get(0).getMessageText());
+                ChatActivity.notifyItem(chat);
                 break;
             case image:
                 //处理图片消息
@@ -164,6 +176,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public void onEvent(NotificationClickEvent event) {
+        SystemUtil.vibrate(BaseActivity.this,new long[]{300,100,300},-1);
         //通知栏点击事件
         Intent notificationIntent = new Intent(BaseActivity.this, ChatActivity.class);
         Message message = event.getMessage();
@@ -173,5 +186,4 @@ public abstract class BaseActivity extends AppCompatActivity {
         notificationIntent.putExtra(NICKNAME, nickname);
         startActivity(notificationIntent);
     }
-
 }

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -57,8 +58,14 @@ public class GroupFragment extends BaseFragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_group_main, null);
         unbinder = ButterKnife.bind(this, view);
         initView();
-        initFriend();
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initFriend();
     }
 
     private void initView() {
@@ -123,10 +130,12 @@ public class GroupFragment extends BaseFragment {
                 Intent intent = new Intent(getContext(), ChatActivity.class);
                 String username = userList.get(position).getUserName();
                 String nickname = userList.get(position).getNickname();
+                Log.d("tag", "onClick: toChat1");
                 Conversation.createSingleConversation(username);
                 intent.putExtra(USERNAME, username);
                 intent.putExtra(NICKNAME, nickname);
                 startActivity(intent);
+                Log.d("tag", "onClick: toChat2");
             }
         });
         rvGroup.setAdapter(adapter);
